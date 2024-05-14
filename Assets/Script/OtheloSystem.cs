@@ -16,7 +16,7 @@ public class OtheloSystem : MonoBehaviour
         {
             for (int y = 0; y < X; y++)
             {
-                var sprite = Instantiate(_sprite, new Vector3(1 * x, 1 * y, 1), Quaternion.Euler(90, 0, 0));
+                var sprite = Instantiate(_sprite, new Vector3(1 * x, 1 * y, 2), Quaternion.Euler(90, 0, 0));
 
                 _FieldSpriteState[x, y] = sprite.GetComponent<SpriteSystem>();
 
