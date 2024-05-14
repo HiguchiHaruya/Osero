@@ -15,6 +15,8 @@ public class SpriteSystem : MonoBehaviour
     }
     public void SetState(OtheloSystem.SpriteState _spriteState)
     {
+        var isActive = _spriteState != OtheloSystem.SpriteState.None;
+        gameObject.SetActive(isActive);
         if (_spriteState == OtheloSystem.SpriteState.White)
         {
             var rotation = Quaternion.Euler(270, 0, 0);
