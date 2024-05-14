@@ -40,8 +40,7 @@ public class OtheloSystem : MonoBehaviour
 
     int cube_pos_x = 4;
     int cube_pos_y = 4;
-
-    private List<(int, int)>  _InfoList = new List<(int, int)>();
+    private List<(int, int)> _InfoList = new List<(int, int)>();
     void Update()
     {
         var pos = _cube.transform.localPosition;
@@ -69,10 +68,17 @@ public class OtheloSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
-            if (TurnCheck())
+            bool isPrant = false;
+            for (int i = 0; i < 8; i++)
             {
-                foreach(var info in _InfoList)
+                if (TurnCheck(i)) isPrant = true;
+            }
+
+
+            if (isPrant && 
+                _FieldState[(int)_cube.transform.localPosition.x,(int) _cube.transform.localPosition.y] == SpriteState.None)
+            {
+                foreach (var info in _InfoList)
                 {
                     var pos_x = info.Item1;
                     var pos_y = info.Item2;
@@ -96,7 +102,7 @@ public class OtheloSystem : MonoBehaviour
         }
     }
 
-    private bool TurnCheck()
+    private bool TurnCheck(int direction)
     {
         bool _turncheck = false;
         var pos_x = _cube.transform.localPosition.x;
@@ -107,28 +113,73 @@ public class OtheloSystem : MonoBehaviour
 
         while (0 <= pos_x && 7 >= pos_x && 0 <= pos_y && 7 >= pos_y) //フィールドにcubeがあればずっと回るやつ
         {
-            if (pos_x == 0)
-            {
-                break;
-            }
-            pos_x--; //1つ左
+            //if (pos_x == 0)
+            //{
+            //    break;
+            //}
+            //pos_x--; //1つ左
 
-            if (_FieldState[(int)pos_x, (int)pos_y] == yourTurn) //１つ左が相手の駒だったら
+            switch (direction)
+            {
+                case 0: //左
+                    if (pos_x == 0) { return _turncheck = false; } // memo : returnすると、TurnCheck関数自体を終了させる
+                    pos_x--;
+                    break;
+                case 1: //右
+                    if (pos_x == 7) { return _turncheck = false; }
+                    pos_x++;
+                    break;
+                case 2: //下
+                    if (pos_y == 0) { return _turncheck = false; }
+                    pos_y--;
+                    break;
+                case 3: //上
+                    if (pos_y == 7) { return _turncheck = false; }
+                    pos_y++;
+                    break;
+                case 4: //右上
+                    if (pos_x == 7) { return _turncheck = false; }
+                    if (pos_y == 7) { return _turncheck = false; }
+                    pos_x++;
+                    pos_y++;
+                    break;
+                case 5: //右下
+                    if (pos_x == 7) { return _turncheck = false; }
+                    if (pos_y == 0) { return _turncheck = false; }
+                    pos_y--;
+                    pos_x++;
+                    break;
+                case 6: //左上
+                    if (pos_x == 0) { return _turncheck = false; }
+                    if (pos_y == 7) { return _turncheck = false; }
+                    pos_y++;
+                    pos_x--;
+                    break;
+                case 7: //左下
+                    if (pos_x == 0) { return _turncheck = false; }
+                    if (pos_y == 0) { return _turncheck = false; }
+                    pos_y--;
+                    pos_x--;
+                    break;
+            }
+
+
+            if (_FieldState[(int)pos_x, (int)pos_y] == yourTurn) //近くのが相手の駒だったら
             {
                 infoList.Add(((int)pos_x, (int)pos_y)); //駒の位置情報を記録しておく
             }
 
-            if (infoList.Count == 0/*←ループが一回目のとき*/&& _FieldState[(int)pos_x,(int)pos_y] == playerTurn ||
-                _FieldState[(int)pos_x, (int)pos_y] == SpriteState.None) //左が自分の駒、もしくはNoneだったらfalse返してbreak
+            if (infoList.Count == 0/*←ループが一回目のとき*/&& _FieldState[(int)pos_x, (int)pos_y] == playerTurn ||
+                _FieldState[(int)pos_x, (int)pos_y] == SpriteState.None) //近くのが自分の駒、もしくはNoneだったらfalse返してbreak
             {
-               _turncheck = false;
+                _turncheck = false;
                 break;
             }
 
-            if(infoList.Count > 0 && _FieldState[(int)pos_x,(int)pos_y] == playerTurn)
+            if (infoList.Count > 0 && _FieldState[(int)pos_x, (int)pos_y] == playerTurn)
             {
                 _turncheck = true;
-                foreach ( var info in infoList )
+                foreach (var info in infoList)
                 {
                     _InfoList.Add(info);
                 }
