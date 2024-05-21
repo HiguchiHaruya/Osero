@@ -75,8 +75,8 @@ public class OtheloSystem : MonoBehaviour
             }
 
 
-            if (isPrant && 
-                _FieldState[(int)_cube.transform.localPosition.x,(int) _cube.transform.localPosition.y] == SpriteState.None)
+            if (isPrant &&
+                _FieldState[(int)_cube.transform.localPosition.x, (int)_cube.transform.localPosition.y] == SpriteState.None)
             {
                 foreach (var info in _InfoList)
                 {
@@ -91,6 +91,13 @@ public class OtheloSystem : MonoBehaviour
                 _InfoList = new List<(int, int)>(); //_InfoListÇèâä˙âª
             }
         }
+        FieldUpdate();
+    }
+
+    private void FieldUpdate()
+    {
+        int _white_count = 0;
+        int _black_count = 0;
 
 
         for (int x = 0; x < X; x++)
@@ -98,10 +105,37 @@ public class OtheloSystem : MonoBehaviour
             for (int y = 0; y < X; y++)
             {
                 _FieldSpriteState[x, y].SetState(_FieldState[x, y]);
+                if(_FieldState[x,y] == SpriteState.Black)
+                {
+                    _black_count++;
+                }
+                if (_FieldState[x,y] == SpriteState.White)
+                {
+                    _white_count++;
+                }
+                if(_black_count + _white_count == 64)
+                {
+                    Resetboad();
+                }
             }
         }
     }
 
+    private void Resetboad()
+    {
+        for (int x = 0; x < X; x++)
+        {
+            for (int y = 0; y < X; y++)
+            {
+                _FieldState[x, y] = SpriteState.None;
+            }
+        }
+        _FieldState[3, 3] = SpriteState.Black;
+        _FieldState[3, 4] = SpriteState.White;
+        _FieldState[4, 3] = SpriteState.White;
+        _FieldState[4, 4] = SpriteState.Black;
+
+    }
     private bool TurnCheck(int direction)
     {
         bool _turncheck = false;
